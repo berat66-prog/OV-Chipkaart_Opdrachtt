@@ -8,12 +8,8 @@ public class Adres {
     private String woonplaats;
     private Reiziger reiziger;
 
-    public Adres(int adres_id, String postcode, String huisnummer, String straat, String woonplaats) {
-        this.adres_id = adres_id;
-        this.postcode = postcode;
-        this.huisnummer = huisnummer;
-        this.straat = straat;
-        this.woonplaats = woonplaats;
+    public Adres() {
+
     }
 
     public Reiziger getReiziger() {
@@ -65,6 +61,11 @@ public class Adres {
     }
 
     public String toString(){
-        return " Adres {#" + adres_id + " " + postcode +"-" + huisnummer + "}";
+
+        if(reiziger != null){
+            return reiziger.toString() + " Adres {#" + adres_id + " " + postcode +"-" + huisnummer + "}";
+        }else{
+            return " Adres {#" + adres_id + " " + postcode +"-" + huisnummer + "}";
+        }
     }
 }

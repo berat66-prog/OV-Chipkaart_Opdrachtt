@@ -1,6 +1,8 @@
 package OVChipkaart_Opdracht.domein;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Reiziger {
     private int id;
@@ -8,7 +10,7 @@ public class Reiziger {
     private String tussenvoegsel;
     private String achternaam;
     private java.sql.Date geboortedatum;
-    private Adres adres;
+    private List<OVChipkaart> OVChipkaarten = new ArrayList<>();
 
     public Reiziger(int id, String voorletter, String tussenvoegsel, String achternaam, java.sql.Date geboortedatum){
         this.id = id;
@@ -19,13 +21,14 @@ public class Reiziger {
 
     }
 
-    public Adres getAdres() {
-        return adres;
+    public List<OVChipkaart> getOVChipkaarten() {
+        return OVChipkaarten;
     }
 
-    public void setAdres(Adres adres) {
-        this.adres = adres;
+    public void setOVChipkaarten(ArrayList<OVChipkaart> OVChipkaarten) {
+        this.OVChipkaarten = OVChipkaarten;
     }
+
 
     public int getId() {
         return id;

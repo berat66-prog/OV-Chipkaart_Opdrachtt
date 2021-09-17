@@ -9,10 +9,14 @@ import java.util.List;
 
 public class AdresDAOPsql implements AdresDAO{
     private Connection conn;
-    ReizigerDAO rdao;
+    private ReizigerDAO rdao;
 
     public AdresDAOPsql(Connection connection){
         this.conn = connection;
+    }
+    @Override
+    public void setRdao(ReizigerDAO rdao) {
+        this.rdao = rdao;
     }
 
     @Override
@@ -67,12 +71,19 @@ public class AdresDAOPsql implements AdresDAO{
             ResultSet rs = stmt.executeQuery(query);
 
             while (rs.next()) {
-                int adres_id = rs.getInt("adres_id");
+                int adres_idd = rs.getInt("adres_id");
                 String postcode = rs.getString("postcode");
                 String huisnummer= rs.getString("huisnummer");
                 String straat = rs.getString("straat");
                 String woonplaats = rs.getString("woonplaats");
-                adres = new Adres(adres_id,postcode,huisnummer,straat,woonplaats);
+
+
+                adres = new Adres();
+                adres.setAdres_id(adres_idd);
+                adres.setPostcode(postcode);
+                adres.setHuisnummer(huisnummer);
+                adres.setStraat(straat);
+                adres.setWoonplaats(woonplaats);
 
             }
         } catch (SQLException e) {
@@ -96,7 +107,17 @@ public class AdresDAOPsql implements AdresDAO{
                 String huisnummer= rs.getString("huisnummer");
                 String straat = rs.getString("straat");
                 String woonplaats = rs.getString("woonplaats");
-                adressen.add(new Adres(id,postcode,huisnummer,straat,woonplaats));
+                int reiziger_id = rs.getInt("reiziger_id");
+
+                Adres adres = new Adres();
+                adres.setAdres_id(id);
+                adres.setPostcode(postcode);
+                adres.setHuisnummer(huisnummer);
+                adres.setStraat(straat);
+                adres.setWoonplaats(woonplaats);
+                adres.setReiziger(rdao.findByid(reiziger_id));
+
+                adressen.add(adres);
 
             }
         } catch (SQLException e) {
