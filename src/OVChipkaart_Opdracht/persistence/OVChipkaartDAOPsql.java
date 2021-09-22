@@ -37,7 +37,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO{
     public boolean update(OVChipkaart ovChipkaart){
         boolean result = false;
 
-        String query = "UPDATE ov_chipkaart SET geldig_tot = ?, klasse = ?, saldo = ?" + " WHERE kaart_nummer= '"+ ovChipkaart.getKaart_nummer() + "'";
+        String query = "UPDATE ov_chipkaart SET geldig_tot = ?, klasse = ?, saldo = ?" + " WHERE kaart_nummer= ?";
         try {
             PreparedStatement pstmt = conn.prepareStatement(query);
 
@@ -45,6 +45,7 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO{
             pstmt.setDate(1, ovChipkaart.getGeldig_tot());
             pstmt.setInt(2, ovChipkaart.getKlasse());
             pstmt.setDouble(3, ovChipkaart.getSaldo());
+            pstmt.setInt(4, ovChipkaart.getKaart_nummer());
 
             result = pstmt.executeUpdate() > 0;
 
@@ -119,11 +120,12 @@ public class OVChipkaartDAOPsql implements OVChipkaartDAO{
     public List<OVChipkaart> findByReiziger(Reiziger reiziger){
         List<OVChipkaart> ovChipkaarten = reiziger.getOVChipkaarten();
 
-        String query = "SELECT kaart_nummer, geldig_tot, klasse, saldo FROM ov_chipkaart WHERE reiziger_id = '"+ reiziger.getId() + "'";
+        String query = "SELECT kaart_nummer, geldig_tot, klasse, saldo FROM ov_chipkaart WHERE reiziger_id = ?";
 
         try{
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1,reiziger.getId());
+            ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
                 int kaart_nummer = rs.getInt("kaart_nummer");

@@ -40,7 +40,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     public boolean update(Reiziger reiziger){
         boolean result = false;
 
-        String query = "UPDATE reiziger SET voorletters = ?, tussenvoegsel = ?, achternaam = ?, geboortedatum = ?" + " WHERE reiziger_id = '"+ reiziger.getId() + "'";
+        String query = "UPDATE reiziger SET voorletters = ?, tussenvoegsel = ?, achternaam = ?, geboortedatum = ?" + " WHERE reiziger_id = ?";
         try {
             PreparedStatement pstmt = conn.prepareStatement(query);
 
@@ -49,6 +49,7 @@ public class ReizigerDAOPsql implements ReizigerDAO {
             pstmt.setString(2, reiziger.getTussenvoegsel());
             pstmt.setString(3, reiziger.getAchternaam());
             pstmt.setDate(4, reiziger.getGeboortedatum());
+            pstmt.setInt(5, reiziger.getId());
 
             result = pstmt.executeUpdate() > 0;
 
@@ -93,11 +94,12 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     public Reiziger findByid(int id){
         Reiziger reiziger = null;
 
-        String query = "SELECT reiziger_id, voorletters, tussenvoegsel, achternaam, geboortedatum FROM reiziger WHERE reiziger_id = '"+ id + "'";
+        String query = "SELECT reiziger_id, voorletters, tussenvoegsel, achternaam, geboortedatum FROM reiziger WHERE reiziger_id = ?";
 
         try{
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1,id);
+            ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
                 int reiziger_id = rs.getInt("reiziger_id");
@@ -121,11 +123,12 @@ public class ReizigerDAOPsql implements ReizigerDAO {
     public List<Reiziger> findByGbdatum(String datum){
         List<Reiziger> reizigers = new ArrayList<>();
 
-        String query = "SELECT reiziger_id, voorletters, tussenvoegsel, achternaam, geboortedatum FROM reiziger WHERE geboortedatum = '"+ datum + "'";
+        String query = "SELECT reiziger_id, voorletters, tussenvoegsel, achternaam, geboortedatum FROM reiziger WHERE geboortedatum = ?";
 
         try {
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setDate(1,java.sql.Date.valueOf(datum));
+            ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
                 int id = rs.getInt("reiziger_id");

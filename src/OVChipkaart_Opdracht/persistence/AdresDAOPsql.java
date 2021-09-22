@@ -43,7 +43,7 @@ public class AdresDAOPsql implements AdresDAO{
     public boolean update(Adres adres){
         boolean result = false;
 
-        String query = "UPDATE adres SET postcode = ?, huisnummer = ?, straat = ?, woonplaats = ?" + " WHERE adres_id= '"+ adres.getAdres_id() + "'";
+        String query = "UPDATE adres SET postcode = ?, huisnummer = ?, straat = ?, woonplaats = ?" + " WHERE adres_id= ?";
         try {
             PreparedStatement pstmt = conn.prepareStatement(query);
 
@@ -52,6 +52,11 @@ public class AdresDAOPsql implements AdresDAO{
             pstmt.setString(2, adres.getHuisnummer());
             pstmt.setString(3, adres.getStraat());
             pstmt.setString(4, adres.getWoonplaats());
+            pstmt.setInt(5,adres.getAdres_id());
+
+
+
+
 
             result = pstmt.executeUpdate() > 0;
 
@@ -64,11 +69,12 @@ public class AdresDAOPsql implements AdresDAO{
     public Adres findByReiziger(Reiziger reiziger){
         Adres adres = null;
 
-        String query = "SELECT adres_id, postcode, huisnummer, straat, woonplaats FROM adres WHERE reiziger_id = '"+ reiziger.getId() + "'";
+        String query = "SELECT adres_id, postcode, huisnummer, straat, woonplaats FROM adres WHERE reiziger_id = ?";
 
         try{
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, reiziger.getId());
+            ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
                 int adres_idd = rs.getInt("adres_id");
@@ -76,7 +82,6 @@ public class AdresDAOPsql implements AdresDAO{
                 String huisnummer= rs.getString("huisnummer");
                 String straat = rs.getString("straat");
                 String woonplaats = rs.getString("woonplaats");
-
 
                 adres = new Adres();
                 adres.setAdres_id(adres_idd);
@@ -95,7 +100,6 @@ public class AdresDAOPsql implements AdresDAO{
 
     public List<Adres> selectAdressen(String query){
         List<Adres> adressen = new ArrayList<>();
-
 
         try{
             Statement stmt = conn.createStatement();

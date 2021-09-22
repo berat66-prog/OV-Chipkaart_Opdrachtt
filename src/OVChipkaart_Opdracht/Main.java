@@ -12,8 +12,6 @@ import java.util.List;
 public class Main {
     private static Connection connection;
 
-
-
     public static void main(String[] args){
         ReizigerDAO rdao = new ReizigerDAOPsql(getConnection(connection));
         AdresDAO adao = new AdresDAOPsql(getConnection(connection));
@@ -41,9 +39,6 @@ public class Main {
 
     }
 
-
-
-
     private static void testReizigerDAO(ReizigerDAO rdao, OVChipkaartDAO ovChipkaartDAO){
         System.out.println("\n---------- Test ReizigerDAO -------------");
 
@@ -60,20 +55,6 @@ public class Main {
         Reiziger sietske = new Reiziger(83, "S", "", "Boers", java.sql.Date.valueOf(gbdatum));
         System.out.print("[Test] Eerst " + reizigers.size() + " reizigers, na ReizigerDAO.save() ");
         rdao.save(sietske);
-//        OVChipkaart ovChipkaart = new OVChipkaart();
-//        ovChipkaart.setKaart_nummer(1000);
-//        ovChipkaart.setGeldig_tot(java.sql.Date.valueOf("2021-09-15"));
-//        ovChipkaart.setKlasse(1);
-//        ovChipkaart.setSaldo(10.0);
-//        OVChipkaart ovChipkaart1 = new OVChipkaart();
-//        ovChipkaart1.setKaart_nummer(1001);
-//        ovChipkaart1.setGeldig_tot(java.sql.Date.valueOf("2021-09-15"));
-//        ovChipkaart1.setKlasse(1);
-//        ovChipkaart1.setSaldo(15.0);
-//        sietske.addOVChipkaart(ovChipkaart);
-//        sietske.addOVChipkaart(ovChipkaart1);
-//        ovChipkaart.setReiziger(sietske);
-//        ovChipkaartDAO.save(ovChipkaart);
         reizigers = rdao.findAll();
         System.out.println(reizigers.size() + " reizigers\n");
 
@@ -110,7 +91,6 @@ public class Main {
 
         System.out.println();
 
-
         System.out.println("[Test] ReizigerDAO.findByid() geeft de volgende reiziger:");
         Reiziger r = rdao.findByid(5);
         System.out.println(r);
@@ -122,8 +102,6 @@ public class Main {
             System.out.println(re);
         }
 
-
-
         System.out.println();
 
         reizigers = rdao.findAll();
@@ -133,10 +111,6 @@ public class Main {
         }
 
         System.out.println();
-
-
-
-
 
     }
 
@@ -210,27 +184,18 @@ public class Main {
 
         System.out.println("Test adao.findByReiziger() geeft de volgende adres:");
 
-
-
         Reiziger reiziger = rdao.findByid(5);
-
-
 
         System.out.println(adao.findByReiziger(reiziger));
 
         rdao.delete(r);
 
-
-
         System.out.println();
-
 
     }
 
     private  static void testOVCHipkaartDAO(OVChipkaartDAO ovChipkaartDAO, ReizigerDAO reizigerDAO){
         ovChipkaartDAO.setRdao(reizigerDAO);
-
-
 
         System.out.println("Test OVChipkaarDAO.findall() geeft de volgende ovChipkaarten met de bijbehorende reizigers:");
         List<OVChipkaart> ovChipkaarten = ovChipkaartDAO.findall();
@@ -317,13 +282,6 @@ public class Main {
         System.out.println(ovChipkaarten.size() + " OVChipkaarten\n");
 
         System.out.println();
-
-
-
-
-
-
-
 
 
         reizigerDAO.delete(berat);
