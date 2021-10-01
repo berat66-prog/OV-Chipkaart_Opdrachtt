@@ -1,6 +1,8 @@
 package OVChipkaart_Opdracht.domein;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OVChipkaart {
     private int kaart_nummer;
@@ -8,9 +10,30 @@ public class OVChipkaart {
     private int klasse;
     private double saldo;
     private Reiziger reiziger;
+    private List<Product> producten = new ArrayList<>();
 
     public OVChipkaart(){
 
+    }
+
+    public void voegProductToe(Product product){
+        if(!producten.contains(product)){
+            producten.add(product);
+        }
+    }
+
+    public void deleteProduct(Product product){
+        if(producten.contains(product)){
+            producten.remove(product);
+        }
+    }
+
+    public List<Product> getProducten() {
+        return producten;
+    }
+
+    public void setProducten(List<Product> producten) {
+        this.producten = producten;
     }
 
     public Reiziger getReiziger() {

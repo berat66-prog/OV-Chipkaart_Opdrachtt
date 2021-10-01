@@ -2,10 +2,12 @@ package OVChipkaart_Opdracht;
 
 import OVChipkaart_Opdracht.domein.Adres;
 import OVChipkaart_Opdracht.domein.OVChipkaart;
+import OVChipkaart_Opdracht.domein.Product;
 import OVChipkaart_Opdracht.domein.Reiziger;
 import OVChipkaart_Opdracht.persistence.*;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,9 +18,11 @@ public class Main {
         ReizigerDAO rdao = new ReizigerDAOPsql(getConnection(connection));
         AdresDAO adao = new AdresDAOPsql(getConnection(connection));
         OVChipkaartDAO ovChipkaartDAO = new OVChipkaartDAOPsql(getConnection(connection));
+        ProductDAO pdao = new ProductDAOPsql(getConnection(connection));
         testReizigerDAO(rdao,ovChipkaartDAO);
         testAdresDAO(adao, rdao);
         testOVCHipkaartDAO(ovChipkaartDAO,rdao);
+        testProductDAO(pdao,ovChipkaartDAO);
 
 
     }
@@ -194,7 +198,7 @@ public class Main {
 
     }
 
-    private  static void testOVCHipkaartDAO(OVChipkaartDAO ovChipkaartDAO, ReizigerDAO reizigerDAO){
+    private static void testOVCHipkaartDAO(OVChipkaartDAO ovChipkaartDAO, ReizigerDAO reizigerDAO){
         ovChipkaartDAO.setRdao(reizigerDAO);
 
         System.out.println("Test OVChipkaarDAO.findall() geeft de volgende ovChipkaarten met de bijbehorende reizigers:");
@@ -285,6 +289,116 @@ public class Main {
 
 
         reizigerDAO.delete(berat);
+
+    }
+
+    private static void testProductDAO(ProductDAO pdao, OVChipkaartDAO odao){
+        pdao.setOdao(odao);
+
+        System.out.println("Test OVChipkaarDAO.findall() geeft de volgende ovChipkaarten met de bijbehorende reizigers:");
+        List<Product> producten = pdao.findall();
+
+        for(Product product : producten){
+            System.out.println(product);
+        }
+
+        System.out.println();
+
+        //NIEUWE PRODUCT AANMAKEN EN PERSISTEREN NAAR DE DATABASE
+        producten = pdao.findall();
+        System.out.print("[Test] Eerst " + producten.size() + " producten, na pdao.save() ");
+        Product product = new Product();
+        product.setProduct_nummer(7);
+        product.setNaam("test");
+        product.setBeschrijving("test beschrijving");
+        product.setPrijs(29.95);
+
+        OVChipkaart ovChipkaart = odao.findByid(18326);
+        OVChipkaart ovChipkaart1 = odao.findByid(35283);
+
+        product.voegOVChipkaartToe(ovChipkaart);
+        product.voegOVChipkaartToe(ovChipkaart1);
+
+        pdao.save(product);
+
+        producten = pdao.findall();
+        System.out.println(producten.size() + " Producten\n");
+
+        System.out.println();
+
+        // EEN AANPASSING MAKEN AAN EEN BESTAAND PRODUCT
+        System.out.println("[TEST] pdao.update");
+        System.out.println("Product voor de aanpassing:");
+        Product product1 = pdao.findById(7);
+        System.out.println(product1);
+
+        System.out.println();
+
+        Product updateProduct = new Product();
+        updateProduct.setProduct_nummer(7);
+        updateProduct.setNaam("Aangepaste naam");
+        updateProduct.setBeschrijving("Aangepaste beschrijving");
+        updateProduct.setPrijs(10.00);
+        pdao.update(updateProduct);
+
+        System.out.println("Product na de aanpassingen: ");
+        updateProduct = pdao.findById(7);
+        System.out.println(updateProduct);
+
+        System.out.println();
+
+        //EEN PRODUCT VERWIJDEREN UIT DE DATABASE
+        producten = pdao.findall();
+        System.out.println("[TEST] eerst " + producten.size() + " producten, na pdao.delete():");
+
+        product.verwijderOVChipkaart(ovChipkaart);
+        product.verwijderOVChipkaart(ovChipkaart);
+        pdao.delete(product);
+
+
+        producten = pdao.findall();
+        System.out.println(producten.size() + " OVChipkaarten\n");
+
+        System.out.println();
+
+        //SELECTEER DE PRODUCTEN DIE HOREN BIJ EEN OVCHIPKAART
+        System.out.println("[TEST] pdao.findByOVChipkaart");
+
+        System.out.println("pdao.findByOVChipkaart geeft de volgende product(en): ");
+
+        OVChipkaart eenOVChipkaart = odao.findByid(35283);
+        List<Product> products = pdao.findByOVChipkaart(eenOVChipkaart);
+
+        for (Product p : products){
+            System.out.println(p);
+        }
+        System.out.println();
+
+        //SELECTEER OVCHIPKAARTEN MET EEN  PRODUCT
+        System.out.println("[TEST] odao.findByProduct");
+        System.out.println("odao.findByProduct geeft de volgende OVChipkaarten(en): ");
+
+        Product eenProduct = pdao.findById(6);
+        List<OVChipkaart> ovChipkaarten = odao.findByProduct(eenProduct);
+
+        for(OVChipkaart ov : ovChipkaarten){
+            System.out.println(ov);
+        }
+        System.out.println();
+
+
+
+
+//
+//        pdao.delete(product);
+//
+//
+//
+//
+//        for(OVChipkaart ovChipkaarten : product.getOvChipkaarten()){
+//            System.out.println(ovChipkaarten);
+//        }
+
 
     }
 
